@@ -37,3 +37,63 @@ class TextItem extends StatelessWidget {
     );
   }
 }
+
+class IconTxtButton extends StatelessWidget {
+  const IconTxtButton({
+    Key key,
+    @required this.text,
+    this.elevation,
+    @required this.onPressed,
+    this.icon,
+  }) : super(key: key);
+
+  final text;
+  final double elevation;
+  final Null Function() onPressed;
+  final IconData icon;
+
+  @override
+  Widget build(BuildContext context) {
+    return RaisedButton(
+      elevation: elevation,
+//              color: Colors.blue,
+      onPressed: onPressed,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Icon(icon),
+            SizedBox(width: 10),
+            Text(text),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class EditText extends StatelessWidget {
+  const EditText({
+    Key key,
+    this.txtController,
+    this.startDrawable,
+    this.label,
+  }) : super(key: key);
+
+  final TextEditingController txtController;
+  final IconData startDrawable;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      controller: txtController,
+      decoration: InputDecoration(
+          prefixIcon: Icon(startDrawable),
+          labelText: label,
+          border: OutlineInputBorder()),
+    );
+  }
+}

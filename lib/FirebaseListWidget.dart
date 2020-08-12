@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutterfirebase/main.dart';
 
 class FirebaseListWidget extends StatefulWidget {
   @override
@@ -23,23 +24,25 @@ class _FirebaseListWidgetState extends State<FirebaseListWidget> {
                 return new Text('Loading...');
               default:
                 return new ListView(
-                  children:
-                      snapshot.data.documents.map((DocumentSnapshot document) {
-                    return new ListTile(
-                      title: new Text(document['title']),
-                      subtitle: new Text(document['author']),
-                    );
-                  }).toList(),
+                  children: snapshot.data.documents
+                      .map((DocumentSnapshot document) => new ListTile(
+                            title: new Text(document['title']),
+                            subtitle: new Text(document['author']),
+                          ))
+                      .toList(),
                 );
             }
           },
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: () {
+          child: Icon(Icons.add),
+          onPressed: () async {
+            dynamic result = await Navigator.pushNamed(context, MyApp.routeInput);
+//            Map noteArg = ModalRoute.of(context).settings.arguments;
             Firestore.instance
                 .collection('books')
                 .document()
-                .setData({'title': 'title', 'author': 'author'});
+                .setData({'title': result['tittle'], 'author': result['author']});
           },
         ));
   }
