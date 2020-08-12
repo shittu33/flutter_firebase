@@ -1,6 +1,6 @@
 # flutterfirebase
 
-A new Flutter application.
+My first experience with flutter
 
 ## DEMO
 
