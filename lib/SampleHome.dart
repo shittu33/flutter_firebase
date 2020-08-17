@@ -84,6 +84,7 @@ class DrawerItem extends StatelessWidget {
 class MainWidget extends StatelessWidget {
   static const simple = "Simple  Example";
   static const input = "input  Example";
+  static const stdScreen = "student screen";
   static const list = "ListView  Example";
   static const grid = "GridView  Example";
   static const fire = "Firebase  Example";
@@ -94,6 +95,7 @@ class MainWidget extends StatelessWidget {
   final List<String> samples = [
     simple,
     input,
+    stdScreen,
     list,
     grid,
     fire,
@@ -118,6 +120,11 @@ class MainWidget extends StatelessWidget {
                       switch (sample) {
                         case simple:
                           Navigator.pushNamed(context, MyApp.routeExpand);
+//                          Navigator.pushNamed(context, MyApp.routeExpand);
+                          break;
+                        case stdScreen:
+                          Navigator.pushNamed(context, MyApp.routeStdScreen);
+//                          Navigator.pushNamed(context, MyApp.routeExpand);
                           break;
                         case input:
                           Navigator.pushNamed(context, MyApp.routeInput);

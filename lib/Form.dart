@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutterfirebase/main.dart';
+import 'package:flutterfirebase/model/NoteFire.dart';
 import 'package:sqflite/sqlite_api.dart';
 
 import 'NoteListWidget.dart';
@@ -16,6 +17,7 @@ class _FormSampleState extends State<FormSample> {
   final detailsController = TextEditingController();
   int currentStep = 0;
   bool complete = false;
+  bool isFirst = true;
 
   next(var steps) {
     currentStep + 1 != steps.length
@@ -23,12 +25,18 @@ class _FormSampleState extends State<FormSample> {
         : setState(() => complete = true);
     if (complete) {
       Navigator.pop(context, {
-        'details': detailsController.text,
-        'tittle': tittleController.text,
-        'author': authorController.text
+        NoteFire.fieldDetail: detailsController.text,
+        NoteFire.fieldTitle: tittleController.text,
+        NoteFire.fieldAuthor: authorController.text
       });
-      print(tittleController.text);
     }
+  }
+
+  goTo(int step) {
+    setState(() {
+      isFirst=false;
+      return currentStep = step;
+    });
   }
 
   cancel() {
@@ -37,24 +45,28 @@ class _FormSampleState extends State<FormSample> {
     }
   }
 
-  goTo(int step) {
-    setState(() => currentStep = step);
-  }
-
   @override
   void dispose() {
     tittleController.dispose();
+    authorController.dispose();
+    detailsController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    dynamic data = ModalRoute.of(context).settings.arguments;
+    NoteFire note;
+    if (data!= null && data.isNotEmpty) {
+      note = NoteFire.fromMap(data);
+    }
     var steps = <Step>[
       Step(
         subtitle: Text("specify note title"),
         content: Padding(
             padding: const EdgeInsets.all(18.0),
             child: EditText(
+              initialText: isFirst?(note!=null?note.title:""):(tittleController.text),
               label: "tittle",
               startDrawable: Icons.text_format,
               txtController: tittleController,
@@ -66,6 +78,7 @@ class _FormSampleState extends State<FormSample> {
         content: Padding(
           padding: const EdgeInsets.all(18.0),
           child: EditText(
+              initialText: isFirst?(note!=null?note.author:""):(authorController.text),
               txtController: authorController,
               startDrawable: Icons.person_outline,
               label: "author"),
@@ -76,7 +89,8 @@ class _FormSampleState extends State<FormSample> {
         content: Padding(
           padding: const EdgeInsets.all(18.0),
           child: EditText(
-                txtController: detailsController,
+              initialText: isFirst?(note!=null?note.details:""):(detailsController.text),
+              txtController: detailsController,
               startDrawable: Icons.note_add,
               label: "Details"),
         ),

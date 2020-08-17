@@ -5,6 +5,7 @@ import 'package:flutter/rendering.dart';
 import 'NoteListWidget.dart';
 import 'SampleHome.dart';
 import 'customWidget/TabWidgets.dart';
+import 'customWidget/popUp.dart';
 
 
 class CollapseBarWidget extends StatelessWidget {

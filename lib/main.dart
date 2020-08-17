@@ -1,6 +1,10 @@
 //import 'package:firebase/firebase.dart' ;
 import 'package:flutter/material.dart';
 import 'package:flutterfirebase/SampleHome.dart';
+import 'package:flutterfirebase/StudentProfile.dart';
+import 'package:flutterfirebase/flipBook.dart';
+import 'package:flutterfirebase/noteScreen.dart';
+import 'package:flutterfirebase/studentForm.dart';
 import 'package:flutterfirebase/style.dart';
 import 'CollapseBarWidget.dart';
 import 'FirebaseListWidget.dart';
@@ -25,6 +29,9 @@ void main() {
 class MyApp extends StatelessWidget {
   static const routeHome = '/';
   static const routeInput = '/input';
+  static const routeNoteScreen = '/nScreen';
+  static const routeStdScreen = '/stdScreen';
+  static const routeStdFormScreen = '/stdFormScreen';
   static const routeFirebase = '/fire';
   static const routeCollapse = '/colapse';
   static const routeExpand = '/expand';
@@ -40,9 +47,13 @@ class MyApp extends StatelessWidget {
       routes: {
         routeHome: (context) => SampleHome(),
         routeInput: (context) => FormSample(),
+        routeStdScreen: (context) => StdProfileScreen(),
+        routeStdFormScreen: (context) => StdFormScreen(),
+        routeNoteScreen: (context) => NoteScreen(),
         routeFirebase: (context) => FirebaseListWidget(),
         routeCollapse: (context) => CollapseBarWidget(),
-        routeExpand: (context) => MyHomePageStateless(title: "yes"),
+//        routeExpand: (context) => MyHomePageStateless(title: "yes"),
+        routeExpand: (context) => ExampleScreen(),
         routeList: (context) => ListViewWidget(title: "ListView Sample"),
         routeGrid: (context) => GridViewWidget(title: "GridView Sample"),
         routeSqlList: (context) => NoteWidget(),

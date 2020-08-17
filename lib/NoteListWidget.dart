@@ -1,10 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutterfirebase/main.dart';
 import 'package:flutterfirebase/util/SqliteHelper.dart';
 import 'NotePattern/NoteBloc.dart';
 import 'NotePattern/NoteRepository.dart';
 
+import 'customWidget/popUp.dart';
 import 'model/Note.dart';
+import 'noteScreen.dart';
 
 class NoteWidget extends StatefulWidget {
   SqliteDbHelper db;
@@ -57,8 +60,18 @@ class _NoteBlocWidgetState extends State<NoteWidget> {
                     Note note = notes[position];
                     return Card(
                       child: ListTile(
-                          onTap: () {
-                            noteBloc.delete(note);
+                          onTap: () async {
+                            dynamic noteResult = await Navigator.pushNamed(
+                                context, MyApp.routeNoteScreen,
+                                arguments: note.toScreenMap());
+                            Note recNote = Note.fromScreenMap(noteResult);
+                            recNote.id = note.id;
+                            note.author = note.author;
+                            if (noteResult[NoteScreen.ISDEl]) {
+                              noteBloc.delete(recNote);
+                            }else{
+                              noteBloc.update(recNote);
+                            }
                           },
                           trailing:
                               NotePopUpOption(note: note, noteBloc: noteBloc),
@@ -76,10 +89,12 @@ class _NoteBlocWidgetState extends State<NoteWidget> {
 //        ],
 //      ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-//          noteBloc.deleteAllNotes();
-          noteBloc.addNote(
-              Note("Teba ti te bayi yoo mo delete ni?", "you", "xciv"));
+        onPressed: () async {
+          dynamic noteResult =
+              await Navigator.pushNamed(context, MyApp.routeInput);
+          noteBloc.addNote(Note.fromScreenMap(noteResult)
+//              Note("Teba ti te bayi yoo mo delete ni?", "you", "xciv")
+              );
         },
         child: Icon(Icons.add),
       ),
@@ -102,94 +117,31 @@ class NotePopUpOption extends StatelessWidget {
     List list = ["delete", "update", "remove"];
     return TextPopUpMenuButton(
       list: list,
-      onButtonTap: (choice) {
+      onButtonTap: (choice) async {
+        Navigator.pop(context);
         switch (choice) {
           case "delete":
             showDialog(
                 context: context,
                 child: OptionAlertDialog(
                     title: "Do you want to delete me?",
-                    onNegativeTap: () => print("onNegativeTap"),
+                    onNegativeTap: () => Navigator.pop(context),
                     negativeTitle: "No",
-                    onPositiveTap: () => noteBloc.delete(note),
+                    onPositiveTap: () {
+                      Navigator.pop(context);
+                      return noteBloc.delete(note);
+                    },
                     positiveTitle: "yes"));
             break;
           case "update":
-            note.title = "Hummm? kilowi Abdul sabur";
-            note.author = "me";
-            note.details = "Something Good is going to happen in my Life";
-            noteBloc.update(note);
+            dynamic noteResult = await Navigator.pushNamed(
+                context, MyApp.routeInput,
+                arguments: note.toScreenMap());
+            var receivedNote = Note.fromScreenMap(noteResult);
+            receivedNote.id = note.id;
+            noteBloc.update(receivedNote);
             break;
         }
-      },
-    );
-  }
-}
-
-class OptionAlertDialog extends StatelessWidget {
-  const OptionAlertDialog({
-    Key key,
-    @required this.title,
-    this.onNegativeTap,
-    this.negativeTitle,
-    this.onPositiveTap,
-    this.positiveTitle,
-  }) : super(key: key);
-
-  final String title;
-  final Function() onNegativeTap;
-  final String negativeTitle;
-  final Function() onPositiveTap;
-  final String positiveTitle;
-
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-        actionsPadding: EdgeInsets.all(0),
-        title: Text(title),
-        actions: <Widget>[
-          negativeTitle != null
-              ? FlatButton(
-                  onPressed: onNegativeTap,
-                  child: Text(negativeTitle),
-                )
-              : null,
-          positiveTitle != null
-              ? FlatButton(
-                  onPressed: onPositiveTap,
-                  child: Text(positiveTitle),
-                )
-              : null,
-        ]);
-  }
-}
-
-class TextPopUpMenuButton extends StatelessWidget {
-  TextPopUpMenuButton({
-    Key key,
-    @required this.list,
-    this.icon,
-    @required this.onButtonTap,
-  }) : super(key: key);
-
-  final IconData icon;
-  final List list;
-  final Function(String choice) onButtonTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return PopupMenuButton(
-      icon: icon != null ? Icon(icon) : Icon(Icons.more_vert),
-      itemBuilder: (BuildContext context) {
-        return list
-            .map((choice) => PopupMenuItem(
-                child: GestureDetector(
-//                  onTap: (){
-//                    print("clicked!!!");
-//                  },
-                    onTap: onButtonTap(choice),
-                    child: Text(choice))))
-            .toList();
       },
     );
   }
